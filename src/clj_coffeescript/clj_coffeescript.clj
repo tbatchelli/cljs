@@ -1,20 +1,34 @@
 (ns clj-coffeescript
-  ( :import  [org.jcoffeescript
-              JCoffeeScriptCompiler
-              JCoffeeScriptCompileException]))
+  ( :import  [java.io InputStreamReader]
+             [org.mozilla.javascript Context]))
 
-(defonce *compiler* (JCoffeeScriptCompiler.))
+(defn get-resource [path]
+  (.getResourceAsStream (clojure.lang.RT/baseLoader) path)) 
 
-(defn compile-string [src]
-  (try
-    (.compile *compiler* src)
-    (catch JCoffeeScriptCompileException e
-      (println "do something here!" e))))
+(defn build-compiler []y
+  (with-open [compiler-src (get-resource "coffee-script.js")
+              compiler-stream (InputStreamReader. compiler-src "UTF-8")]
+    (println "compiler found")
+    (let [context (Context/enter)]
+      (.setOptimizationLevel context -1)
+      (println "context created" context)
+      (try (let [globalscope (.initStandardObjects context)]
+             (println "global scope created" globalscope)
+             (.evaluateReader context globalscope compiler-stream "coffee-script.js" 0 nil)
+             (println "compiler loaded")
+             globalscope)
+           (finally (println "aaaaand I'm done")
+                    (Context/exit))))))
 
-(defn compile-file [src-file-path dst-file-path]
-  (let [src (slurp src-file-path)
-        dst (compile-string src)]
-    (println dst)
-    (spit dst-file-path dst)))
-
-
+(defn compile-string [global-scope src]
+  (let [context (Context/enter)
+        compile-scope (.newObject context global-scope)]
+    (try
+      (.setParentScope compile-scope global-scope)
+      (.put compile-scope "coffeeScriptSource" compile-scope src)
+      (.evaluateString context
+                       compile-scope
+                       "CoffeeScript.compile(coffeeScriptSource);"
+                       "clj-coffeescript"
+                       0 nil)
+      (finally (Context/exit)))))
