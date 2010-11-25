@@ -5,7 +5,7 @@
 (defn get-resource [path]
   (.getResourceAsStream (clojure.lang.RT/baseLoader) path)) 
 
-(defn build-compiler []y
+(defn build-compiler []
   (with-open [compiler-src (get-resource "coffee-script.js")
               compiler-stream (InputStreamReader. compiler-src "UTF-8")]
     (println "compiler found")
@@ -20,7 +20,7 @@
            (finally (println "aaaaand I'm done")
                     (Context/exit))))))
 
-(defn compile-string [global-scope src]
+(defn compile-string [global-scope src & bare?]
   (let [context (Context/enter)
         compile-scope (.newObject context global-scope)]
     (try
@@ -28,7 +28,7 @@
       (.put compile-scope "coffeeScriptSource" compile-scope src)
       (.evaluateString context
                        compile-scope
-                       "CoffeeScript.compile(coffeeScriptSource);"
+                       (format "CoffeeScript.compile(coffeeScriptSource, {bare: %s});" bare?)
                        "clj-coffeescript"
                        0 nil)
       (finally (Context/exit)))))
