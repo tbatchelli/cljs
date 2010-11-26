@@ -41,3 +41,8 @@
        (evaluate-string string name scope ctx)))
   ([string name scope ctx]
      (.evaluateString ctx scope string name 0 nil)))
+
+
+(comment "maybe get the line number of the caller to report errors"
+         (defmacro f [] (println (pr-str (meta &form))))
+         (f))
