@@ -19,11 +19,10 @@
   (let [scope (build-scope compiler-scope)]
     (with-context [ctx]
       (set-named-property "coffeeScriptSource" src compiler-scope scope)
-      (.evaluateString ctx
-                       scope
-                       (format "CoffeeScript.compile(coffeeScriptSource, {bare: %s});" bare?)
+      (evaluate-string (format "CoffeeScript.compile(coffeeScriptSource, {bare: %s});" bare?)
                        "clj-coffeescript"
-                       0 nil))))
+                       scope
+                       ctx))))
 
 (comment "compile coffeescript"
          (use clj-coffeescript.compiler)

@@ -34,3 +34,10 @@
        (set-named-property name value target start ctx)))
   ([name value target start ctx]
      (.put target name start value)))
+
+(defn evaluate-string
+  ([string name scope]
+     (with-context [ctx]
+       (evaluate-string string name scope ctx)))
+  ([string name scope ctx]
+     (.evaluateString ctx scope string name 0 nil)))
