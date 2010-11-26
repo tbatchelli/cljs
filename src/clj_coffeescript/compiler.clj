@@ -2,17 +2,19 @@
   (:use clj-coffeescript.rhino)
   (:import  [java.io InputStreamReader]))
 
-(defn get-resource [path]
-  (.getResourceAsStream (clojure.lang.RT/baseLoader) path))
+(defn get-resource [uri]
+  (.getResourceAsStream (clojure.lang.RT/baseLoader) uri))
+
+(defn get-resource-as-stream [uri]
+  (let [resource (get-resource uri)]
+    (InputStreamReader. resource "UTF-8")))
 
 (defn build-compiler []
-  (with-open [compiler-src (get-resource "coffee-script.js")
-              compiler-stream (InputStreamReader. compiler-src "UTF-8")]
-    (println "CoffeeScript compiler found")
+  (with-open [compiler (get-resource-as-stream "coffee-script.js")]
     (with-context [ctx]
       (set-context-interpreted ctx) ;; avoid 64kb src limit
       (let [compiler-scope (build-scope)]
-        (load-stream compiler-scope "coffee-script.js" compiler-stream ctx)
+        (load-stream compiler-scope "coffee-script.js" compiler ctx)
         compiler-scope))))
 
 (defn compile-string [compiler-scope src & bare?]
