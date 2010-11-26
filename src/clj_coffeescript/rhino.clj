@@ -27,3 +27,10 @@
   ([scope file-name stream ctx]
      (.evaluateReader ctx scope stream file-name 0 nil)
      (println file-name " loaded.")))
+
+(defn set-named-property
+  ([name value target start]
+     (with-context [ctx]
+       (set-named-property name value target start ctx)))
+  ([name value target start ctx]
+     (.put target name start value)))

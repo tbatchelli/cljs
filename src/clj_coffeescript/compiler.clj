@@ -18,7 +18,7 @@
 (defn compile-string [compiler-scope src & bare?]
   (let [scope (build-scope compiler-scope)]
     (with-context [ctx]
-      (.put compiler-scope "coffeeScriptSource" scope src)
+      (set-named-property "coffeeScriptSource" src compiler-scope scope)
       (.evaluateString ctx
                        scope
                        (format "CoffeeScript.compile(coffeeScriptSource, {bare: %s});" bare?)
