@@ -19,3 +19,11 @@
        (let [new-scope (.newObject ctx parent)]
          (.setParentScope new-scope parent)
          new-scope))))
+
+(defn load-stream
+  ([scope file-name stream]
+     (with-context [ctx]
+       (load-stream scope file-name stream ctx)))
+  ([scope file-name stream ctx]
+     (.evaluateReader ctx scope stream file-name 0 nil)
+     (println file-name " loaded.")))
