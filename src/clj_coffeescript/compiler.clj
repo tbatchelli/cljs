@@ -14,7 +14,7 @@
     (with-context [ctx]
       (set-context-interpreted ctx) ;; avoid 64kb src limit
       (let [compiler-scope (build-scope)]
-        (load-stream compiler-scope "coffee-script.js" compiler ctx)
+        (load-stream compiler "coffee-script.js" compiler-scope ctx)
         compiler-scope))))
 
 (defn compile-string [compiler-scope src & bare?]

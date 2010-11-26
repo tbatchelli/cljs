@@ -21,10 +21,10 @@
          new-scope))))
 
 (defn load-stream
-  ([scope file-name stream]
+  ([stream file-name scope]
      (with-context [ctx]
-       (load-stream scope file-name stream ctx)))
-  ([scope file-name stream ctx]
+       (load-stream stream file-name scope ctx)))
+  ([stream file-name scope ctx]
      (.evaluateReader ctx scope stream file-name 0 nil)
      (println file-name " loaded.")))
 
