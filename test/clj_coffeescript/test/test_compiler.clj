@@ -1,5 +1,6 @@
 (ns clj-coffeescript.test.test-compiler
   (:use clj-coffeescript.compiler :reload)
+  (:require [clj-coffeescript.rhino :as rhino])
   (:use clojure.test))
 
 (deftest end-to-end
@@ -8,6 +9,7 @@
              (compile-string compiler "a=12" true)))
         "var a;\na = 12;"))
   (testing "compiling and running coffeescript code"
-    (is (= (let [compiler (build-compiler)]
-             (evaluate-string compiler "a=1+3;")))
+    (is (= (let [compiler (build-compiler)
+                 runtime (rhino/build-scope)]
+             (evaluate-string compiler runtime "a=1+3;")))
         4)))

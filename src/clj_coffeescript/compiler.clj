@@ -20,11 +20,10 @@
                        scope
                        ctx))))
 
-(defn evaluate-string [compiler-scope src]
-  (let [js (compile-string compiler-scope src true)
-        scope (rhino/build-scope)]
+(defn evaluate-string [compiler-scope runtime-scope src]
+  (let [js (compile-string compiler-scope src true)]
     (rhino/with-context [ctx]
-      (rhino/evaluate-string js "compiled coffee" scope))))
+      (rhino/evaluate-string js "compiled coffee" runtime-scope))))
 
 (comment "compile coffeescript"
          (use clj-coffeescript.compiler)
