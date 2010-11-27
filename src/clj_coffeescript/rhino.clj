@@ -57,6 +57,14 @@
   ([string name scope ctx]
      (.evaluateString ctx scope string name 0 nil)))
 
+;;; env.js stuff
+(defn envjs-prepare [scope ctx]
+  (evaluate-string "function print(message) {java.lang.System.out.println(message);}"
+                   "prevent 'print' error"
+                   scope
+                   ctx))
+(defn envjs-turn-on-javascript [scope ctx]
+  (evaluate-string "Envjs({ scriptTypes : { '': true,  'text/javascript': true, 'text/envjs': false }});" "execute javascript" scope ctx))
 
 (comment "maybe get the line number of the caller to report errors"
          (defmacro f [] (println (pr-str (meta &form))))

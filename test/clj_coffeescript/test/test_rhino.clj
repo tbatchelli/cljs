@@ -23,14 +23,23 @@
                (set-context-interpreted ctx)
                ;; hack to make env.js load properly -- rhino doesn't
                ;; define this non-ECMA function. Neither does env.js 
-               (evaluate-string "function print(message) {java.lang.System.out.println(message);}"
-                                "prevent 'print' error"
-                                root-scope
-                                ctx)
+               (envjs-prepare root-scope ctx)
                (load-resources ["resources/env.rhino.1.2.js" "resources/jquery.js" ] root-scope ctx)
-               (evaluate-string "Envjs({ scriptTypes : { '': true,  'text/javascript': true, 'text/envjs': false }});" "execute javascript" root-scope ctx)
+               (envjs-turn-on-javascript root-scope ctx)
                (println "about to load page")
-               (evaluate-string "window.location='test/resources/simple.html';" "env test" root-scope ctx)
+               (evaluate-string "window.location='test/resources/simple.html';" "envjs test" root-scope ctx)
                (println "page loaded")
                (evaluate-string "$('#mydiv > p').text()" "jquery test" root-scope ctx)))
-           "hello world!"))))
+           "hello world!")))
+  (testing "env.rhino.js, jquery.js and qunit.js"
+    (is (= (let [scope (build-scope)]
+             (with-context [ctx]
+               (set-context-interpreted ctx)
+               ;; hack to make env.js load properly -- rhino doesn't
+               ;; define this non-ECMA function. Neither does env.js 
+               (envjs-prepare scope ctx)
+               (load-resources ["resources/env.rhino.1.2.js"
+                                "resources/jquery.js" ] scope ctx)
+               (envjs-turn-on-javascript scope ctx)
+               (evaluate-string "window.location='test/resources/qunit-test.html';" "qunit+envjs test" scope ctx)))
+           "test/resources/qunit-test.html"))))
