@@ -28,12 +28,6 @@
          (.setParentScope new-scope parent)
          new-scope))))
 
-(defn load-resources [resources scope ctx]
-  (let [load-resource (fn [uri]
-                        (with-open [stream (get-resource-as-stream uri)]
-                          (load-stream stream uri scope ctx )))]
-    (doall (map load-resource resources))))
-
 (defn load-stream
   ([stream file-name scope]
      (with-context [ctx]
@@ -42,6 +36,13 @@
      (println ctx scope stream file-name)
      (.evaluateReader ctx scope stream file-name 0 nil)
      (println file-name " loaded.")))
+
+(defn load-resources [resources scope ctx]
+  (let [load-resource (fn [uri]
+                        (with-open [stream (get-resource-as-stream uri)]
+                          (load-stream stream uri scope ctx )))]
+    (doall (map load-resource resources))))
+
 
 (defn set-named-property
   ([name value target start]
