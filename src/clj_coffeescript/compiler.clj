@@ -1,32 +1,33 @@
 (ns clj-coffeescript.compiler
-  (:use clj-coffeescript.rhino)
-  (:import  [java.io InputStreamReader]))
-
-(defn get-resource [uri]
-  (.getResourceAsStream (clojure.lang.RT/baseLoader) uri))
-
-(defn get-resource-as-stream [uri]
-  (let [resource (get-resource uri)]
-    (InputStreamReader. resource "UTF-8")))
+  (:require [clj-coffeescript.rhino :as rhino]))
 
 (defn build-compiler []
-  (with-open [compiler (get-resource-as-stream "coffee-script.js")]
-    (with-context [ctx]
-      (set-context-interpreted ctx) ;; avoid 64kb src limit
-      (let [compiler-scope (build-scope)]
-        (load-stream compiler "coffee-script.js" compiler-scope ctx)
-        compiler-scope))))
+  (rhino/with-context [ctx]
+    (rhino/set-context-interpreted ctx) ;; avoid 64kb src limit
+    (let [compiler-scope (rhino/build-scope)]
+      ;; load the coffeescript compiler
+      (rhino/load-resources ["coffee-script.js"] compiler-scope ctx)
+      compiler-scope)))
 
 (defn compile-string [compiler-scope src & bare?]
-  (let [scope (build-scope compiler-scope)]
-    (with-context [ctx]
-      (set-named-property "coffeeScriptSource" src compiler-scope scope)
-      (evaluate-string (format "CoffeeScript.compile(coffeeScriptSource, {bare: %s});" bare?)
+  (let [scope (rhino/build-scope compiler-scope)]
+    (rhino/with-context [ctx]
+      ;; load the script to compile into a variable
+      (rhino/set-named-property "coffeeScriptSource" src compiler-scope scope)
+      ;; compile the contents of the variable
+      (rhino/evaluate-string (format "CoffeeScript.compile(coffeeScriptSource, {bare: %s});" bare?)
                        "clj-coffeescript"
                        scope
                        ctx))))
 
+(defn evaluate-string [compiler-scope src]
+  (let [js (compile-string compiler-scope src true)
+        scope (rhino/build-scope)]
+    (rhino/with-context [ctx]
+      (rhino/evaluate-string js "compiled coffee" scope))))
+
 (comment "compile coffeescript"
          (use clj-coffeescript.compiler)
-         (def compiler-scope (build-compiler))
-         (compile-string compiler-scope "a=12;"))
+         (def compiler (build-compiler))
+         (compile-string compiler "a=12;")
+         (evaluate-string compiler "a=3+4"))
