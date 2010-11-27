@@ -20,7 +20,7 @@
 (defn build-scope
   ([]
      (with-context [ctx]
-       (let [new-scope (.initStandardObjects ctx)] 
+       (let [new-scope (.initStandardObjects ctx)]
          new-scope)))
   ([parent]
      (with-context [ctx]
@@ -55,7 +55,7 @@
      (with-context [ctx]
        (evaluate-string string name scope ctx)))
   ([string name scope ctx]
-     (.evaluateString ctx scope string name 0 nil)))
+     (.evaluateString ctx scope string name 1 nil)))
 
 
 (comment "maybe get the line number of the caller to report errors"
