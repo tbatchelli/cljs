@@ -33,7 +33,6 @@
      (with-context [ctx]
        (load-stream stream file-name scope ctx)))
   ([stream file-name scope ctx]
-     (println ctx scope stream file-name)
      (.evaluateReader ctx scope stream file-name 0 nil)
      (println file-name " loaded.")))
 

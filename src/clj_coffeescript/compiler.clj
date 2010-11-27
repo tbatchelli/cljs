@@ -1,26 +1,33 @@
 (ns clj-coffeescript.compiler
-  (:use clj-coffeescript.rhino))
+  (:require [clj-coffeescript.rhino :as rhino]))
 
 (defn build-compiler []
-  (with-context [ctx]
-    (set-context-interpreted ctx) ;; avoid 64kb src limit
-    (let [compiler-scope (build-scope)]
+  (rhino/with-context [ctx]
+    (rhino/set-context-interpreted ctx) ;; avoid 64kb src limit
+    (let [compiler-scope (rhino/build-scope)]
       ;; load the coffeescript compiler
-      (load-resources ["coffee-script.js"] compiler-scope ctx)
+      (rhino/load-resources ["coffee-script.js"] compiler-scope ctx)
       compiler-scope)))
 
 (defn compile-string [compiler-scope src & bare?]
-  (let [scope (build-scope compiler-scope)]
-    (with-context [ctx]
+  (let [scope (rhino/build-scope compiler-scope)]
+    (rhino/with-context [ctx]
       ;; load the script to compile into a variable
-      (set-named-property "coffeeScriptSource" src compiler-scope scope)
+      (rhino/set-named-property "coffeeScriptSource" src compiler-scope scope)
       ;; compile the contents of the variable
-      (evaluate-string (format "CoffeeScript.compile(coffeeScriptSource, {bare: %s});" bare?)
+      (rhino/evaluate-string (format "CoffeeScript.compile(coffeeScriptSource, {bare: %s});" bare?)
                        "clj-coffeescript"
                        scope
                        ctx))))
 
+(defn evaluate-string [compiler-scope src]
+  (let [js (compile-string compiler-scope src true)
+        scope (rhino/build-scope)]
+    (rhino/with-context [ctx]
+      (rhino/evaluate-string js "compiled coffee" scope))))
+
 (comment "compile coffeescript"
          (use clj-coffeescript.compiler)
-         (def compiler-scope (build-compiler))
-         (compile-string compiler-scope "a=12;"))
+         (def compiler (build-compiler))
+         (compile-string compiler "a=12;")
+         (evaluate-string compiler "a=3+4"))

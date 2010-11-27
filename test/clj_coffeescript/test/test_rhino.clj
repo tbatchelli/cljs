@@ -10,5 +10,3 @@
              (.get root-scope "test-var" root-scope))
            "check-value"))))
 
-(deftest test-load-resources
-  )
