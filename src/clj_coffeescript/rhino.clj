@@ -1,5 +1,6 @@
 (ns clj-coffeescript.rhino
-  (:import [org.mozilla.javascript Context]))
+  (:import [org.mozilla.javascript Context]
+           [java.io InputStreamReader]))
 
 (defmacro with-context [[ctx] & body]
   `(try (let [~ctx (Context/enter)]
@@ -8,6 +9,13 @@
 
 (defn set-context-interpreted [ctx]
   (.setOptimizationLevel ctx -1))
+
+(defn get-resource [uri]
+  (.getResourceAsStream (clojure.lang.RT/baseLoader) uri))
+
+(defn get-resource-as-stream [uri]
+  (let [resource (get-resource uri)]
+    (InputStreamReader. resource "UTF-8")))
 
 (defn build-scope
   ([]
@@ -20,11 +28,18 @@
          (.setParentScope new-scope parent)
          new-scope))))
 
+(defn load-resources [resources scope ctx]
+  (let [load-resource (fn [uri]
+                        (with-open [stream (get-resource-as-stream uri)]
+                          (load-stream stream uri scope ctx )))]
+    (doall (map load-resource resources))))
+
 (defn load-stream
   ([stream file-name scope]
      (with-context [ctx]
        (load-stream stream file-name scope ctx)))
   ([stream file-name scope ctx]
+     (println ctx scope stream file-name)
      (.evaluateReader ctx scope stream file-name 0 nil)
      (println file-name " loaded.")))
 
