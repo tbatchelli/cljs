@@ -1,17 +1,17 @@
 # clj-coffeescript
 
-FIXME: write description
+A library to run and test both javascript and coffeescript on the server side.
 
 ## Usage
 
-FIXME: write
-
-## Installation
-
-FIXME: write
+   (use 'clj-coffeescript.shell)
+   (with-new-scope 
+         (load-library "jquery")
+         ;; load apache.org and collect the text of all the links in that page
+         (js "window.location='http://apache.org'; $('a').text();"))
 
 ## License
 
-Copyright (C) 2010 FIXME
+Copyright (C) 2010 Antoni Batchelli
 
 Distributed under the Eclipse Public License, the same as Clojure.
