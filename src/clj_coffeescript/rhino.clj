@@ -1,5 +1,6 @@
 (ns clj-coffeescript.rhino
-  (:import [org.mozilla.javascript Context]
+  (:import [org.mozilla.javascript Context ContextFactory]
+           [org.mozilla.javascript.tools.shell Global Main]
            [java.io InputStreamReader]))
 
 (defmacro with-context [[ctx] & body]
@@ -17,11 +18,25 @@
   (let [resource (get-resource uri)]
     (InputStreamReader. resource "UTF-8")))
 
+(defn build-global-scope []
+  (let [global-scope (Global.)
+        ctx (.enterContext (ContextFactory/getGlobal))]
+    (try
+      (.init global-scope ctx)
+      (set-context-interpreted ctx)
+      global-scope
+      (finally (Context/exit)))))
+
+(defonce *global-scope* (build-global-scope))
+
+(defn build-shell-scope []
+  (with-context [ctx]
+    (.initStandardObjects ctx *global-scope*)))
+
 (defn build-scope
   ([]
      (with-context [ctx]
-       (let [new-scope (.initStandardObjects ctx)] 
-         new-scope)))
+       (.initStandardObjects ctx)))
   ([parent]
      (with-context [ctx]
        (let [new-scope (.newObject ctx parent)]
@@ -58,13 +73,9 @@
      (.evaluateString ctx scope string name 0 nil)))
 
 ;;; env.js stuff
-(defn envjs-prepare [scope ctx]
-  (evaluate-string "function print(message) {java.lang.System.out.println(message);}"
-                   "prevent 'print' error"
-                   scope
-                   ctx))
+
 (defn envjs-turn-on-javascript [scope ctx]
-  (evaluate-string "Envjs({ scriptTypes : { '': true,  'text/javascript': true, 'text/envjs': false }});" "execute javascript" scope ctx))
+  (evaluate-string "Envjs({ scriptTypes : { '': true,  'text/javascript': true, 'text/envjs': true }});" "execute javascript" scope ctx))
 
 (comment "maybe get the line number of the caller to report errors"
          (defmacro f [] (println (pr-str (meta &form))))

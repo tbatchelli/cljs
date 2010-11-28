@@ -7,7 +7,7 @@
 (def *runtime* nil)
 
 (defmacro with-new-scope [& body]
-  `(binding [*runtime* (rhino/build-scope)]
+  `(binding [*runtime* (rhino/build-shell-scope)]
     ~@body))
 
 (defmacro with-scope [[scope] & body]
@@ -17,7 +17,7 @@
 (defn new-scope [& [parent]]
   (if parent
     (rhino/build-scope parent)
-    (rhino/build-scope)))
+    (rhino/build-shell-scope)))
 
 (defn cs
   ([script]
@@ -45,5 +45,4 @@
 (defmethod load-library "envjs" [library]
   (rhino/with-context [ctx]
     (rhino/set-context-interpreted ctx)
-    (rhino/envjs-prepare *runtime* ctx)
     (rhino/load-resources ["resources/env.rhino.1.2.js"] *runtime* ctx)))
