@@ -44,3 +44,13 @@
       (finally
        (alter-var-root #'*runtime* (fn [_] original-scope))))
     (is (= *runtime* original-scope) "Making sure this test didn't pollute")))
+
+(deftest test-load-envjs
+  (with-new-scope
+    (is (load-library "envjs") "loading envjs first creates the 'print' function for it to load properly")))
+
+
+(deftest test-load-jquery
+  (with-new-scope
+    (is (load-library "jquery") "loading jquery should also load envjs")))
+

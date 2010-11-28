@@ -33,3 +33,17 @@
 
 (defn set-scope [scope]
   (alter-var-root #'*runtime* (fn [_] scope)))
+
+(defmulti load-library identity)
+
+(defmethod load-library "jquery" [library]
+  (rhino/with-context [ctx]
+    (rhino/set-context-interpreted ctx)
+    (load-library "envjs")
+    (rhino/load-resources ["resources/jquery.js"] *runtime* ctx)))
+
+(defmethod load-library "envjs" [library]
+  (rhino/with-context [ctx]
+    (rhino/set-context-interpreted ctx)
+    (rhino/envjs-prepare *runtime* ctx)
+    (rhino/load-resources ["resources/env.rhino.1.2.js"] *runtime* ctx)))

@@ -27,7 +27,7 @@
                (load-resources ["resources/env.rhino.1.2.js" "resources/jquery.js" ] root-scope ctx)
                (envjs-turn-on-javascript root-scope ctx)
                (println "about to load page")
-               (evaluate-string "window.location='test/resources/simple.html';" "envjs test" root-scope ctx)
+               (evaluate-string "window.location='test/test-resources/simple.html';" "envjs test" root-scope ctx)
                (println "page loaded")
                (evaluate-string "$('#mydiv > p').text()" "jquery test" root-scope ctx)))
            "hello world!")))
@@ -41,5 +41,5 @@
                (load-resources ["resources/env.rhino.1.2.js"
                                 "resources/jquery.js" ] scope ctx)
                (envjs-turn-on-javascript scope ctx)
-               (evaluate-string "window.location='test/resources/qunit-test.html';" "qunit+envjs test" scope ctx)))
-           "test/resources/qunit-test.html"))))
+               (evaluate-string "window.location='test/test-resources/qunit-test.html';" "qunit+envjs test" scope ctx)))
+           "test/test-resources/qunit-test.html"))))
