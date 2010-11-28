@@ -1,5 +1,5 @@
 (ns clj-coffeescript.test.test-shell
-  (:use clj-coffeescript.shell :reload)
+  (:use clj-coffeescript.shell :reload-all)
   (:use clojure.test))
 
 (deftest test-with-new-scope
@@ -29,3 +29,18 @@
   (is (= 12
          (let [scope (new-scope)]
            (js "var a;a=12;" scope)))))
+
+(deftest test-new-scope
+  (let [parent (new-scope)]
+    (is (new-scope parent))))
+
+(deftest test-set-scope
+  (let [original-scope *runtime*
+        new-scope (new-scope)]
+    (try
+      (alter-var-root #'*runtime* (fn [_] nil))
+      (set-scope new-scope)
+      (is (= *runtime* new-scope) "The runtime has been set")
+      (finally
+       (alter-var-root #'*runtime* (fn [_] original-scope))))
+    (is (= *runtime* original-scope) "Making sure this test didn't pollute")))

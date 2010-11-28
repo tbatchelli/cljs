@@ -4,7 +4,7 @@
 
 (def *compiler* (compiler/build-compiler))
 
-(def *runtime* )
+(def *runtime* nil)
 
 (defmacro with-new-scope [& body]
   `(binding [*runtime* (rhino/build-scope)]
@@ -14,8 +14,10 @@
   `(binding [*runtime* ~scope]
     ~@body))
 
-(defn new-scope []
-  (rhino/build-scope))
+(defn new-scope [& [parent]]
+  (if parent
+    (rhino/build-scope parent)
+    (rhino/build-scope)))
 
 (defn cs
   ([script]
@@ -28,3 +30,6 @@
      (rhino/evaluate-string script "shell" *runtime*))
   ([script scope]
      (rhino/evaluate-string script "shell" scope)))
+
+(defn set-scope [scope]
+  (alter-var-root #'*runtime* (fn [_] scope)))
