@@ -54,3 +54,9 @@
   (with-new-scope
     (is (load-library "jquery") "loading jquery should also load envjs")))
 
+(deftest test-load-page-jquery
+  (is (= (with-new-scope
+           (load-library "jquery")
+           (js "window.location='http://palletops.com'; $('a').text();"))
+         "PalletBlogAboutSource on GitHubAPI docspalletconfigurationcredentialshowtoreleaseSubscribe to the Pallet Blog »Unsubscribe »Subscribe via RSSAboutPalletBuild you environments in the cloud with palletSo Clojure walks into a cloudContinuous Deployment of Clojure Web Applications")))
+

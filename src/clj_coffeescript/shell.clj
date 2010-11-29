@@ -45,4 +45,4 @@
 (defmethod load-library "envjs" [library]
   (rhino/with-context [ctx]
     (rhino/set-context-interpreted ctx)
-    (rhino/load-resources ["resources/env.rhino.1.2.js"] *runtime* ctx)))
+    (rhino/load-resources ["resources/env.rhino.1.2.35.js"] *runtime* ctx)))

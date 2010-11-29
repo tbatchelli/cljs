@@ -21,7 +21,7 @@
     (is (= (let [root-scope (build-shell-scope)]
              (with-context [ctx]
                (set-context-interpreted ctx)
-               (load-resources ["resources/env.rhino.1.2.js" "resources/jquery.js" ] root-scope ctx)
+               (load-resources ["resources/env.rhino.1.2.35.js" "resources/jquery.js" ] root-scope ctx)
                (envjs-turn-on-javascript root-scope ctx)
                (println "about to load page")
                (evaluate-string "window.location='test/test-resources/simple.html';" "envjs test" root-scope ctx)
@@ -32,7 +32,7 @@
     (is (= (let [scope (build-shell-scope)]
              (with-context [ctx]
                (set-context-interpreted ctx)
-               (load-resources ["resources/env.rhino.1.2.js"
+               (load-resources ["resources/env.rhino.1.2.35.js"
                                 "resources/jquery.js" ] scope ctx)
                (envjs-turn-on-javascript scope ctx)
                (evaluate-string "window.location='test/test-resources/qunit-test.html';" "qunit+envjs test" scope ctx)))
