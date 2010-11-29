@@ -10,3 +10,8 @@
 
 (deftest test-all-test
   (test-all p1))
+
+(deftest combine-all-test
+  (let [js (combine-all p1)]
+    (is (re-find #"(?s)a.f = function.*b.f = function" js))
+    (is (not (re-find #"= exports" js)))))
