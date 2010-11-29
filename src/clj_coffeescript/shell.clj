@@ -4,18 +4,20 @@
 
 (def *compiler* (compiler/build-compiler))
 
-(def *runtime* )
+(def *runtime* nil)
 
 (defmacro with-new-scope [& body]
-  `(binding [*runtime* (rhino/build-scope)]
+  `(binding [*runtime* (rhino/build-shell-scope)]
     ~@body))
 
 (defmacro with-scope [[scope] & body]
   `(binding [*runtime* ~scope]
     ~@body))
 
-(defn new-scope []
-  (rhino/build-scope))
+(defn new-scope [& [parent]]
+  (if parent
+    (rhino/build-scope parent)
+    (rhino/build-shell-scope)))
 
 (defn cs
   ([script]
@@ -28,3 +30,19 @@
      (rhino/evaluate-string script "shell" *runtime*))
   ([script scope]
      (rhino/evaluate-string script "shell" scope)))
+
+(defn set-scope [scope]
+  (alter-var-root #'*runtime* (fn [_] scope)))
+
+(defmulti load-library identity)
+
+(defmethod load-library "jquery" [library]
+  (rhino/with-context [ctx]
+    (rhino/set-context-interpreted ctx)
+    (load-library "envjs")
+    (rhino/load-resources ["resources/jquery.js"] *runtime* ctx)))
+
+(defmethod load-library "envjs" [library]
+  (rhino/with-context [ctx]
+    (rhino/set-context-interpreted ctx)
+    (rhino/load-resources ["resources/env.rhino.1.2.35.js"] *runtime* ctx)))

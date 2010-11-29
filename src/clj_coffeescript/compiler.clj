@@ -6,7 +6,7 @@
     (rhino/set-context-interpreted ctx) ;; avoid 64kb src limit
     (let [compiler-scope (rhino/build-scope)]
       ;; load the coffeescript compiler
-      (rhino/load-resources ["coffee-script.js"] compiler-scope ctx)
+      (rhino/load-resources ["resources/coffee-script.js"] compiler-scope ctx)
       compiler-scope)))
 
 (defn compile-string [compiler-scope src & bare?]

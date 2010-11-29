@@ -18,28 +18,22 @@
                (evaluate-string "_([1, 2, 3]).reduce(function(a,b){ return a+b; });" "underscore test" root-scope)))
            6)))
   (testing "loading env.rhino.js, jquery.js, load a page and see if jquery can parse it"
-    (is (= (let [root-scope (build-scope)]
+    (is (= (let [root-scope (build-shell-scope)]
              (with-context [ctx]
                (set-context-interpreted ctx)
-               ;; hack to make env.js load properly -- rhino doesn't
-               ;; define this non-ECMA function. Neither does env.js 
-               (envjs-prepare root-scope ctx)
-               (load-resources ["resources/env.rhino.1.2.js" "resources/jquery.js" ] root-scope ctx)
+               (load-resources ["resources/env.rhino.1.2.35.js" "resources/jquery.js" ] root-scope ctx)
                (envjs-turn-on-javascript root-scope ctx)
                (println "about to load page")
-               (evaluate-string "window.location='test/resources/simple.html';" "envjs test" root-scope ctx)
+               (evaluate-string "window.location='test/test-resources/simple.html';" "envjs test" root-scope ctx)
                (println "page loaded")
                (evaluate-string "$('#mydiv > p').text()" "jquery test" root-scope ctx)))
            "hello world!")))
   (testing "env.rhino.js, jquery.js and qunit.js"
-    (is (= (let [scope (build-scope)]
+    (is (= (let [scope (build-shell-scope)]
              (with-context [ctx]
                (set-context-interpreted ctx)
-               ;; hack to make env.js load properly -- rhino doesn't
-               ;; define this non-ECMA function. Neither does env.js 
-               (envjs-prepare scope ctx)
-               (load-resources ["resources/env.rhino.1.2.js"
+               (load-resources ["resources/env.rhino.1.2.35.js"
                                 "resources/jquery.js" ] scope ctx)
                (envjs-turn-on-javascript scope ctx)
-               (evaluate-string "window.location='test/resources/qunit-test.html';" "qunit+envjs test" scope ctx)))
-           "test/resources/qunit-test.html"))))
+               (evaluate-string "window.location='test/test-resources/qunit-test.html';" "qunit+envjs test" scope ctx)))
+           "test/test-resources/qunit-test.html"))))
