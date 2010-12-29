@@ -1,7 +1,7 @@
-(ns clj-coffeescript.project-test
+(ns cljs.project-test
   (:use
    clojure.test
-   clj-coffeescript.project))
+   cljs.project))
 
 
 (def p1 (project

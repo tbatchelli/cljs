@@ -1,8 +1,8 @@
-(ns clj-coffeescript.project
+(ns cljs.project
   "Manage coffescript and javascript projects"
   (:require
-   [clj-coffeescript.compiler :as compiler]
-   [clj-coffeescript.rhino :as rhino]
+   [cljs.compiler :as compiler]
+   [cljs.rhino :as rhino]
    [clojure.zip :as zip]
    [clojure.string :as string]
    [clojure.java.io :as io]))
@@ -147,13 +147,13 @@
 (def js-require-def
   "function require(ns) {
      var rt_var=Packages.clojure.lang.RT['var'];
-     return rt_var('clj-coffeescript.project','js-require').invoke(ns);
+     return rt_var('cljs.project','js-require').invoke(ns);
    }")
 
 (def js-tracking-require-def
   "function require(ns) {
      var rt_var=Packages.clojure.lang.RT['var'];
-     return rt_var('clj-coffeescript.project','js-tracking-require').invoke(ns);
+     return rt_var('cljs.project','js-tracking-require').invoke(ns);
    }")
 
 

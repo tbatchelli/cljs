@@ -1,5 +1,5 @@
-(ns clj-coffeescript.test.test-rhino
-  (:use clj-coffeescript.rhino :reload)
+(ns cljs.test.test-rhino
+  (:use cljs.rhino :reload)
   (:use clojure.test))
 
 (deftest test-scopes

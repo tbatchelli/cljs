@@ -1,6 +1,6 @@
-(ns clj-coffeescript.shell
-  (:require [clj-coffeescript.rhino :as rhino]
-            [clj-coffeescript.compiler :as compiler]))
+(ns cljs.shell
+  (:require [cljs.rhino :as rhino]
+            [cljs.compiler :as compiler]))
 
 (def *compiler* (compiler/build-compiler))
 

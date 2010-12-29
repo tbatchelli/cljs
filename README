@@ -1,10 +1,10 @@
-# clj-coffeescript
+# cljs
 
 A library to run and test both javascript and coffeescript on the server side.
 
 ## Usage
 
-   (use 'clj-coffeescript.shell)
+   (use 'cljs.shell)
    (with-new-scope 
          (load-library "jquery")
          ;; load apache.org and collect the text of all the links in that page

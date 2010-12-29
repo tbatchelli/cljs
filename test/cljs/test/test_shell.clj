@@ -1,5 +1,5 @@
-(ns clj-coffeescript.test.test-shell
-  (:use clj-coffeescript.shell :reload-all)
+(ns cljs.test.test-shell
+  (:use cljs.shell :reload-all)
   (:use clojure.test))
 
 (deftest test-with-new-scope
@@ -54,7 +54,8 @@
   (with-new-scope
     (is (load-library "jquery") "loading jquery should also load envjs")))
 
-(deftest test-load-page-jquery
+;; todo -- this test is too fragile. Think of something else...
+#_(deftest test-load-page-jquery
   (is (= (with-new-scope
            (load-library "jquery")
            (js "window.location='http://palletops.com'; $('a').text();"))

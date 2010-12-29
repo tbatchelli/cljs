@@ -1,6 +1,6 @@
-(ns clj-coffeescript.test.test-compiler
-  (:use clj-coffeescript.compiler :reload)
-  (:require [clj-coffeescript.rhino :as rhino])
+(ns cljs.test.test-compiler
+  (:use cljs.compiler :reload)
+  (:require [cljs.rhino :as rhino])
   (:use clojure.test))
 
 (deftest end-to-end

@@ -1,4 +1,4 @@
-(ns clj-coffeescript.rhino
+(ns cljs.rhino
   (:import [org.mozilla.javascript Context ContextFactory]
            [org.mozilla.javascript.tools.shell Global Main]
            [java.io InputStreamReader]))
